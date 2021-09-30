@@ -39,7 +39,7 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 
 private:
-
+    void log(QString st);
     void saveConf();
     void LoadConf();
 

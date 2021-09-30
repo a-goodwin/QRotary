@@ -59,8 +59,15 @@ void CMainWnd::on_bRefresh_clicked()
 
 void CMainWnd::on_cmSerial_currentIndexChanged(int index)
 {
+    if (ser->isOpen()) ser->close();
     ser->setPortName(ui->cmSerial->currentData().toString());
     set->setValue("cmSerial", ui->cmSerial->currentData().toString());
+    if (!ser->open(QIODevice::WriteOnly)) {
+        log(tr("cant open port %1").arg(ser->portName()));
+        DBG_MS(2, tr("port %1 can not be opened!").arg(ser->portName()));
+    }
+    ser->setBaudRate(ui->eBaudRate->value());
+
 }
 
 void CMainWnd::slIfaceUpd()
@@ -136,14 +143,15 @@ void CMainWnd::LoadConf()
 
 void CMainWnd::slSendString()
 {
-    ser->setBaudRate(ui->eBaudRate->value());
-    if (!ser->open(QIODevice::WriteOnly)) {
+    if (!ser->isOpen()) {
+        log(tr("cant open port %1").arg(ser->portName()));
         DBG_MS(2, tr("port %1 can not be opened!").arg(ser->portName()));
         return;
     }
-    ser->write(ui->eSendString->text().toLocal8Bit().append('\n'));
-    ser->close();
-    ui->eLog->appendPlainText(tr("-> %1").arg(ui->eSendString->text()));
+    QByteArray ba = ui->eSendString->text().toLocal8Bit().append('\n');
+    ser->write(ba);
+    ser->flush();
+    log(tr("->(%1)").arg(ui->eSendString->text()));
 }
 
 void CMainWnd::slTimer()
@@ -167,5 +175,11 @@ void CMainWnd::on_sElevation_sliderMoved(int position)
 void CMainWnd::closeEvent(QCloseEvent *event)
 {
     saveConf();
+    ser->close();
     event->accept();
+}
+
+void CMainWnd::log(QString st)
+{
+    ui->eLog->appendPlainText(st);
 }
