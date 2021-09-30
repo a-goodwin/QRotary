@@ -19,6 +19,8 @@ CMainWnd::CMainWnd(QWidget *parent)
     ser = new QSerialPort(this);
     ui->setupUi(this);
 
+    setWindowTitle(windowTitle()+" - "+APP_VER);
+
     InitConf(set);
 
     ////// init ui elements from settings
@@ -34,6 +36,8 @@ CMainWnd::CMainWnd(QWidget *parent)
     DBG_MS(2, "LoadConf");
     LoadConf();
     DBG_MS(2, "INIT DONE");
+
+    on_cmSerial_currentIndexChanged(0);
 }
 
 CMainWnd::~CMainWnd()
@@ -59,11 +63,13 @@ void CMainWnd::on_bRefresh_clicked()
 
 void CMainWnd::on_cmSerial_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
+
     if (ser->isOpen()) ser->close();
     ser->setPortName(ui->cmSerial->currentData().toString());
     set->setValue("cmSerial", ui->cmSerial->currentData().toString());
     if (!ser->open(QIODevice::WriteOnly)) {
-        log(tr("cant open port %1").arg(ser->portName()));
+        log(tr("can't open port %1").arg(ser->portName()));
         DBG_MS(2, tr("port %1 can not be opened!").arg(ser->portName()));
     }
     ser->setBaudRate(ui->eBaudRate->value());

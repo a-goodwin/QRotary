@@ -5,6 +5,8 @@
 #include <QSerialPortInfo>
 #include <QTimer>
 
+#define APP_VER "1.0.0"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWnd; }
 QT_END_NAMESPACE
