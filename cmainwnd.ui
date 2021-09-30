@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
-    <height>441</height>
+    <width>882</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CMainWnd</string>
+   <string>Управление поворотной платформой</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_7">
    <item>
@@ -27,7 +27,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0,0">
            <item>
             <widget class="QComboBox" name="cmSerial"/>
            </item>
@@ -35,6 +35,19 @@
             <widget class="QToolButton" name="bRefresh">
              <property name="text">
               <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="eBaudRate">
+             <property name="minimum">
+              <number>1200</number>
+             </property>
+             <property name="maximum">
+              <number>1000000</number>
+             </property>
+             <property name="value">
+              <number>115200</number>
              </property>
             </widget>
            </item>
@@ -75,6 +88,9 @@
                    <width>50</width>
                    <height>0</height>
                   </size>
+                 </property>
+                 <property name="maximum">
+                  <number>420</number>
                  </property>
                 </widget>
                </item>
@@ -136,6 +152,12 @@
                  <height>0</height>
                 </size>
                </property>
+               <property name="minimum">
+                <number>-90</number>
+               </property>
+               <property name="maximum">
+                <number>90</number>
+               </property>
               </widget>
              </item>
             </layout>
@@ -167,7 +189,10 @@
             <number>450</number>
            </property>
            <property name="value">
-            <number>10</number>
+            <number>0</number>
+           </property>
+           <property name="sliderPosition">
+            <number>0</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -245,7 +270,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QPlainTextEdit" name="plainTextEdit">
+          <widget class="QPlainTextEdit" name="eLog">
            <property name="maximumSize">
             <size>
              <width>450</width>
@@ -314,7 +339,7 @@
         <rect>
          <x>15</x>
          <y>5</y>
-         <width>296</width>
+         <width>361</width>
          <height>16</height>
         </rect>
        </property>
@@ -322,11 +347,275 @@
         <string>Шаблон команды UART (%1 - азимут, %2 возвышение)</string>
        </property>
       </widget>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>131</width>
+         <height>121</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Пределы азимута</string>
+       </property>
+       <widget class="QLabel" name="label_7">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Макс</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="eAzimuthMin">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>51</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="maximum">
+         <number>360</number>
+        </property>
+        <property name="displayIntegerBase">
+         <number>10</number>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="eAzimuthMax">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>51</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="maximum">
+         <number>360</number>
+        </property>
+        <property name="value">
+         <number>360</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>70</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Мин</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="geometry">
+        <rect>
+         <x>150</x>
+         <y>60</y>
+         <width>161</width>
+         <height>120</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Пределы возвышения</string>
+       </property>
+       <widget class="QSpinBox" name="eElevationMax">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>51</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>-90</number>
+        </property>
+        <property name="maximum">
+         <number>90</number>
+        </property>
+        <property name="value">
+         <number>90</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Макс</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="eElevationMin">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>90</y>
+          <width>51</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>-90</number>
+        </property>
+        <property name="maximum">
+         <number>90</number>
+        </property>
+        <property name="value">
+         <number>-90</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>70</y>
+          <width>61</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Мин</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>eAzimuth</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>67</x>
+     <y>440</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>66</x>
+     <y>435</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eElevation</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>412</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>306</x>
+     <y>433</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eSendTimer</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>541</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>416</x>
+     <y>433</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eAzimuthMax</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>86</x>
+     <y>545</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eAzimuthMin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>57</x>
+     <y>472</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eElevationMax</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>136</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>524</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eElevationMin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CMainWnd</receiver>
+   <slot>slIfaceUpd()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>211</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>461</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slIfaceUpd()</slot>
+ </slots>
 </ui>
