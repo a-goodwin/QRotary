@@ -86,7 +86,10 @@ void CMainWnd::slIfaceUpd()
     if (sender()->objectName()=="eAzimuth") {
         ui->sAzimuth->setValue(ui->eAzimuth->value());
     }
-
+    if (sender()->objectName() == "eBaudRate") {
+        on_cmSerial_currentIndexChanged(0);
+        return;
+    }
     /*if (sender()->objectName() == "cmSerial") {
         set->setValue("cmSerial", ui->cmSerial->currentData().toString());
         return;
