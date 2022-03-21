@@ -10,3 +10,5 @@ Release:LIBS += -LG:/QT/QRotaryCtl/mapviewer/bin -lqmapcontrol
 }
 
 QT += network
+
+SUBDIRS += mapviewer/src
