@@ -4,12 +4,19 @@
 #include <QDialog>
 #include <QSerialPortInfo>
 #include <QTimer>
+#include <mapcontrol.h>
+#include <osmmapadapter.h>
+#include <maplayer.h>
+#include <geometrylayer.h>
+#include <imagepoint.h>
 
 #define APP_VER "1.0.0"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWnd; }
 QT_END_NAMESPACE
+using namespace qmapcontrol;
+
 class QSettings;
 class QSerialPort;
 class CMainWnd : public QDialog
@@ -51,6 +58,10 @@ private:
     QSerialPort *ser;
     QSerialPortInfo info;
     int savedPos = -1;
+
+    MapAdapter *mapadapter;
+    Layer *mainlayer;
+
 
     QTimer sendTmr;
 };

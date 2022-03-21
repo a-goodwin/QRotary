@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabRotationCtl">
       <attribute name="title">
@@ -311,10 +311,30 @@
       <attribute name="title">
        <string>Карта </string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="MapControl" name="mc" native="true"/>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="tabSkyMap">
+     <widget class="QWidget" name="tabDN">
       <attribute name="title">
-       <string>Небо</string>
+       <string>Диаграмма направленности</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="tabDebug">
@@ -500,6 +520,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MapControl</class>
+   <extends>QWidget</extends>
+   <header location="global">mapcontrol.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

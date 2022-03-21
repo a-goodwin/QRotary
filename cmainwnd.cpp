@@ -37,6 +37,30 @@ CMainWnd::CMainWnd(QWidget *parent)
     LoadConf();
     DBG_MS(2, "INIT DONE");
 
+    ui->mc->showScale(true);
+    ui->mc->enableMouseWheelEvents();
+    mapadapter = new OSMMapAdapter();
+    mainlayer = new MapLayer("OSM-online Map Layer", mapadapter);
+    ui->mc->addLayer(mainlayer);
+    ui->mc->setZoom(4);
+    ui->mc->showCrosshairs(true);
+
+    QPointF c = QPointF(39.85, 57.54);
+    ui->mc->resize(ui->tabGeoMap->size());
+    /*
+    plane = new ImagePoint(39.85, 57.54 ,QString(":/qnorstorage.res/images/plane_small.png"));
+    mapadapter = new OSMMapAdapter();
+
+    mainlayer = new MapLayer("OSM-online Map Layer", mapadapter);
+    planelayer = new GeometryLayer("geometry",  mapadapter);
+    planelayer->addGeometry(plane);
+    ui->mc->addLayer(mainlayer);
+    ui->mc->addLayer(planelayer);
+    ui->mc->setView(c);
+    plane->setCoordinate(c);
+    ui->mc->setZoom(4);
+    ui->mc->showCrosshairs(true);
+*/
     on_cmSerial_currentIndexChanged(0);
 }
 
