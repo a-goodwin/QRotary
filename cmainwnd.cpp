@@ -2,12 +2,14 @@
 #include "ui_cmainwnd.h"
 
 #include <QSettings>
-#include "../myutils/configutils.h"
+#include "configutils.h"
 #include "QSerialPort"
 
 #define DBG_SRC_STR "MAIN"
 #define DEBUG_LEVEL 4
-#include "../myutils/debug.h"
+#include "debug.h"
+
+#include <QPoint>
 
 CMainWnd::CMainWnd(QWidget *parent)
     : QDialog(parent)
@@ -19,9 +21,11 @@ CMainWnd::CMainWnd(QWidget *parent)
     ser = new QSerialPort(this);
     ui->setupUi(this);
 
+    sock = new QTcpSocket(this);
+
     setWindowTitle(windowTitle()+" - "+APP_VER);
 
-    InitConf(set);
+    InitConf(set, "");
 
     ////// init ui elements from settings
     /// uart
@@ -39,29 +43,31 @@ CMainWnd::CMainWnd(QWidget *parent)
 
     ui->mc->showScale(true);
     ui->mc->enableMouseWheelEvents();
-    mapadapter = new OSMMapAdapter();
-    mainlayer = new MapLayer("OSM-online Map Layer", mapadapter);
-    ui->mc->addLayer(mainlayer);
-    ui->mc->setZoom(4);
-    ui->mc->showCrosshairs(true);
+    //mapadapter = new OSMMapAdapter();
+    //mainlayer = new MapLayer("OSM-online Map Layer", mapadapter);
+    //ui->mc->addLayer(mainlayer);
+    //ui->mc->setZoom(4);
+    //ui->mc->showCrosshairs(true);
 
-    QPointF c = QPointF(39.85, 57.54);
+    //QPointF c = QPointF(39.85, 57.54);
     ui->mc->resize(ui->tabGeoMap->size());
-    /*
-    plane = new ImagePoint(39.85, 57.54 ,QString(":/qnorstorage.res/images/plane_small.png"));
+
+    plane = new ImagePoint(ui->eLocalLon->value(), ui->eLocalLat->value() , QString("G:\\WORK\\QT\\QRotary\\1.jpg") /*"qrc:/1.png")*/);
     mapadapter = new OSMMapAdapter();
 
-    mainlayer = new MapLayer("OSM-online Map Layer", mapadapter);
+    mainlayer = new MapLayer("maplayer", mapadapter);
     planelayer = new GeometryLayer("geometry",  mapadapter);
     planelayer->addGeometry(plane);
     ui->mc->addLayer(mainlayer);
     ui->mc->addLayer(planelayer);
+    QPointF c(ui->eLocalLon->value(), ui->eLocalLat->value());
     ui->mc->setView(c);
     plane->setCoordinate(c);
-    ui->mc->setZoom(4);
+    ui->mc->setZoom(16);
     ui->mc->showCrosshairs(true);
-*/
+    plane->setVisible(true);
     on_cmSerial_currentIndexChanged(0);
+    connect(planelayer, &GeometryLayer::geometryClicked, this, &CMainWnd::slGeometryClicked);
 }
 
 CMainWnd::~CMainWnd()
@@ -69,6 +75,7 @@ CMainWnd::~CMainWnd()
     set->deleteLater();
     ser->close();
     ser->deleteLater();
+    sock->deleteLater();
     delete ui;
 }
 
@@ -89,15 +96,24 @@ void CMainWnd::on_cmSerial_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
 
-    if (ser->isOpen()) ser->close();
+    if (ser) {
+        if (ser->isOpen()) {
+            disconnect(ser,0,0,0);
+            ser->close();
+        }
+    }
+
     ser->setPortName(ui->cmSerial->currentData().toString());
     set->setValue("cmSerial", ui->cmSerial->currentData().toString());
     if (!ser->open(QIODevice::WriteOnly)) {
         log(tr("can't open port %1").arg(ser->portName()));
         DBG_MS(2, tr("port %1 can not be opened!").arg(ser->portName()));
-    }
+    } else {
+        connect(ser, &QSerialPort::readyRead, this, &CMainWnd::slSerialPortData);
+        log(tr("Port %1 opened").arg(ser->portName()));
+        DBG_MS(2, tr("Port %1 opened!").arg(ser->portName()));
+    };
     ser->setBaudRate(ui->eBaudRate->value());
-
 }
 
 void CMainWnd::slIfaceUpd()
@@ -133,6 +149,51 @@ void CMainWnd::slIfaceUpd()
     //saveConf();
 
     sendTmr.start(ui->eSendTimer->value());
+}
+
+void CMainWnd::slSerialPortData()
+{
+    //if (!ser) return;
+    QByteArray data = ser->readAll();
+    log(tr("<=\"%1\"").arg(QString(data)));
+    // data processing
+    foreach( char c, data) {
+        switch (c) {
+        case 0x0a: // CR
+            if (m_st.length()>0) slSerialPortString(m_st);
+            m_st.clear();
+            break;
+        case 0x0d:
+            if (m_st.length()>0) slSerialPortString(m_st);
+            m_st.clear();
+            break;
+        default: //symbols
+            m_st.append(c);
+            break;
+        }
+    }
+}
+
+void CMainWnd::slSerialPortString(QString st)
+{
+    bool ok = false;
+    log(tr("<-\"%1\"").arg(st));
+    // parse string
+    QString st1, st2;
+    st1 = st.left(st.indexOf(' ')-1);
+    st2 = st.mid(st.indexOf(' ')+1);
+    float az = st1.toFloat(&ok);
+    if (ok) m_az = az;
+    float el = st2.toFloat(&ok);
+    if (ok) m_el = el;
+
+    ui->sAzView->setValue(m_az);
+    ui->sElView->setValue(m_el);
+}
+
+void CMainWnd::slGeometryClicked(Geometry *geometry, QPoint point)
+{
+    DBG(1) << "geometry clicked" << point;
 }
 
 void CMainWnd::on_bManualSend_clicked()

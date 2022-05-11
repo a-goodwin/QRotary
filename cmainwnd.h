@@ -9,9 +9,9 @@
 #include <maplayer.h>
 #include <geometrylayer.h>
 #include <imagepoint.h>
-
-#define APP_VER "1.0.0"
-
+#include <geometry.h>
+#define APP_VER "1.0.5"
+#include <QTcpSocket>
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWnd; }
 QT_END_NAMESPACE
@@ -44,6 +44,10 @@ private slots:
 
     void on_sElevation_sliderMoved(int position);
 
+    void slSerialPortData();
+    void slSerialPortString(QString st);
+    void slGeometryClicked(Geometry *geometry, QPoint point);
+
 protected:
     void closeEvent(QCloseEvent* event) override;
 
@@ -55,14 +59,20 @@ private:
     Ui::CMainWnd *ui;
 
     QSettings *set;
-    QSerialPort *ser;
+    QSerialPort *ser = nullptr;
     QSerialPortInfo info;
     int savedPos = -1;
 
     MapAdapter *mapadapter;
     Layer *mainlayer;
-
+    ImagePoint *plane;
+    GeometryLayer *planelayer;
+    QString m_st="";
+    float m_az  = 0;
+    float m_el  = 0;
 
     QTimer sendTmr;
+
+    QTcpSocket *sock;
 };
 #endif // CMAINWND_H
