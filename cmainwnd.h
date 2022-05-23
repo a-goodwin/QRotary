@@ -10,7 +10,7 @@
 #include <geometrylayer.h>
 #include <imagepoint.h>
 #include <geometry.h>
-#define APP_VER "1.0.5"
+#define APP_VER "1.0.7"
 #include <QTcpSocket>
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWnd; }
@@ -47,10 +47,12 @@ private slots:
     void slSerialPortData();
     void slSerialPortString(QString st);
     void slGeometryClicked(Geometry *geometry, QPoint point);
+    void slmapMouseEvent(const QMouseEvent* evnt, const QPointF coordinate);
 
 protected:
     void closeEvent(QCloseEvent* event) override;
-
+    void resizeEvent(QResizeEvent* event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private:
     void log(QString st);
     void saveConf();
@@ -65,8 +67,8 @@ private:
 
     MapAdapter *mapadapter;
     Layer *mainlayer;
-    ImagePoint *plane;
-    GeometryLayer *planelayer;
+    ImagePoint *antenna;
+    GeometryLayer *geomlayer;
     QString m_st="";
     float m_az  = 0;
     float m_el  = 0;

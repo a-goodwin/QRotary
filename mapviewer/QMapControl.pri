@@ -1,14 +1,14 @@
 INCLUDEPATH += mapviewer/src/
-
-win32 {
-Debug:LIBS += -LG:/WORK/QT/QRotary/mapviewer/bin -lqmapcontrol0d
-Release:LIBS += -LG:/WORK/QT/QRotary/mapviewer/bin -lqmapcontrol0
-}
-else {
-Debug:LIBS += -LG:/WORK/QT/QRotary/mapviewer/bin -lqmapcontrold
-Release:LIBS += -LG:/WORK/QT/QRotary/mapviewer/bin -lqmapcontrol
-}
-
+SUBDIRS += mapviewer/src
 QT += network
 
-SUBDIRS += mapviewer/src
+win32 {
+Debug:LIBS += -L$$_PRO_FILE_PWD_/mapviewer/bin -lqmapcontrol0d
+Release:LIBS += -L$$_PRO_FILE_PWD_/mapviewer/bin -lqmapcontrol0
+}
+else {
+Debug:LIBS += -L$$_PRO_FILE_PWD_/mapviewer/bin -lqmapcontrold
+Release:LIBS += -L$$_PRO_FILE_PWD_/mapviewer/bin -lqmapcontrol
+}
+
+

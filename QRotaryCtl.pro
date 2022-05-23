@@ -29,6 +29,8 @@ HEADERS += \
 FORMS += \
     cmainwnd.ui
 
+INCLUDEPATH += $$_PRO_FILE_PWD_/../myutils
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
